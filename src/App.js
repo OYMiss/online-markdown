@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import FileBar from './view/FileBar'
 import Editor from './editor/Editor'
+import FileBar from './view/FileBar'
 import NewPost from './view/NewPost'
+import DeletePost from './view/DeletePost'
 
 import 'katex/dist/katex.min.css'
 import './static/mde.css'
@@ -26,7 +27,8 @@ function App (props) {
   // all curPost.content is not up to date
   const [curPost, setCurPost] = useState(defaultPost)
   const [allPost, setAllPost] = useState([])
-  const [openDialog, setOpenDialog] = useState(false)
+  const [newPostOn, setNewPostOn] = useState(false)
+  const [delPostOn, setDelPostOn] = useState(false)
 
   useEffect(() => {
     const filename = curPost.filename
@@ -66,10 +68,14 @@ function App (props) {
 
   return (
     <div style={{ fontSize: '1.1rem' }}>
-      <NewPost open={openDialog} setOpen={setOpenDialog} onSubmit={(filename) => {
+      <NewPost open={newPostOn} setOpen={setNewPostOn} onSubmit={(filename) => {
         let newPost = { ...curPost, filename, postDate: new Date().toISOString() }
         pushPost(newPost)
         setCurPost(newPost)
+      }}/>
+      <DeletePost filename={curPost.filename} open={delPostOn} setOpen={setDelPostOn} onDelete={(filename) => {
+        db.deletePost(filename)
+        setAllPost(allPost.slice(allPost.length - 1, 1))
       }}/>
 
       <FileBar allPost={allPost}
@@ -84,8 +90,9 @@ function App (props) {
                    cm.value(event.target.result.content)
                  })
                }}
-               openNewPost={() => setOpenDialog(true)}/>
-      <Editor copyPost={() => setOpenDialog(true)} onSave={(content) => pushPost({ ...curPost, content })}
+               openDelPost={() => setDelPostOn(true)}
+               openNewPost={() => setNewPostOn(true)}/>
+      <Editor copyPost={() => setNewPostOn(true)} onSave={(content) => pushPost({ ...curPost, content })}
               onChange={onChange} post={curPost}
               getMdeInstance={(instance) => {
                 cm = instance

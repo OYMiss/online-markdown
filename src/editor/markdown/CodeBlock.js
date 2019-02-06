@@ -4,7 +4,6 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import {githubGist} from 'react-syntax-highlighter/dist/styles/hljs';
 
 export default function CodeBlock(props) {
-  console.log(props);
   if (props.language && props.value) {
     return (
       <div>

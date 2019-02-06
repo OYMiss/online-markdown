@@ -13,7 +13,9 @@
     "react-scripts": "next",
     "react-simplemde-editor": "^4.0.0",
     "react-syntax-highlighter": "10.1.2",
-    "remark-math": "^1.0.5"
+    "remark-math": "^1.0.5",
+    "classnames": "latest",
+    "object-assign": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

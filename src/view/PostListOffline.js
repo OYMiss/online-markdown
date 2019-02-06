@@ -20,7 +20,7 @@ export default function (props) {
       </ExpansionPanelSummary>
       <ExpansionPanelDetails style={{ padding: 0 }}>
         <List style={{ cursor: 'pointer', width: '100%' }}>
-          {allPost.map((post) => <PostItem post={post} onSelect={onSelect} curPostName={curPostName}/>)}
+          {allPost.map((post) => <PostItem key={post.filename} post={post} onSelect={onSelect} curPostName={curPostName}/>)}
         </List>
       </ExpansionPanelDetails>
     </ExpansionPanel>

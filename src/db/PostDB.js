@@ -28,4 +28,8 @@ export default class PostDB {
     this.setCallback(request, onsuccess, onerror)
   }
 
+  deletePost (filename, onsuccess, onerror) {
+    let request = this.db.transaction(['post'], 'readwrite').objectStore('post').delete(filename)
+    this.setCallback(request, onsuccess, onerror)
+  }
 }
