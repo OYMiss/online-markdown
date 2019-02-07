@@ -10,8 +10,7 @@ import './static/mde.css'
 import './static/App.css'
 
 
-const welcome_file = `
-# Welcome 
+const welcome_file = `# Welcome 
 > This is HelloWorld! 
 
 \`\`\`python
