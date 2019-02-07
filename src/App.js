@@ -9,11 +9,36 @@ import 'katex/dist/katex.min.css'
 import './static/mde.css'
 import './static/App.css'
 
+
+const welcome_file = `
+# Welcome 
+> This is HelloWorld! 
+
+\`\`\`python
+for a in arr:
+    print(a)
+\`\`\`
+## How about math? 
+$$
+e^{-j\\omega}
+$$
+
+## Table
+| Column 1 | Column 2 | Column 3 |
+| -------- | -------- | -------- |
+| Text     | Text     | Text     |
+
+## Styles
+**bold text**
+
+*italic text*
+
+`
 const defaultPost = {
   title: 'Hello',
   filename: 'default',
   category: 'local',
-  content: '# Welcome \n This is HelloWorld! \n ## nice math? \n $$\ne^{-j\\omega}\n$$',
+  content: welcome_file,
   author: 'OY',
   postDate: new Date().toISOString()
 }
