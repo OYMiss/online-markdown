@@ -5,7 +5,7 @@ import Markdown from './markdown/Markdown'
 import SimpleMDE from 'react-simplemde-editor'
 
 export default function Editor (props) {
-  const { post, onChange, getMdeInstance, copyPost } = props
+  const { post, onChange, getMdeInstance, customAction } = props
   return <SimpleMDE
     value={post.content}
     onChange={onChange}
@@ -18,7 +18,7 @@ export default function Editor (props) {
         '|',
         {
           name: 'custom',
-          action: copyPost,
+          action: customAction,
           className: 'fa fa-copy',
           title: 'Custom Button',
         },],

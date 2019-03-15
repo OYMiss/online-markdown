@@ -9,64 +9,25 @@ import 'katex/dist/katex.min.css'
 import './static/mde.css'
 import './static/App.css'
 
-
-const welcome_file = `# Welcome 
-> This is HelloWorld! 
-
-\`\`\`python
-for a in arr:
-    print(a)
-\`\`\`
-## How about math? 
-$$
-e^{-j\\omega}
-$$
-
-## Table
-| Column 1 | Column 2 | Column 3 |
-| -------- | -------- | -------- |
-| Text     | Text     | Text     |
-
-## Styles
-**bold text**
-
-*italic text*
-
-`
 const defaultPost = {
   title: 'Hello',
-  filename: 'default',
+  filename: 'no-select',
   category: 'local',
-  content: welcome_file,
+  content: '',
   author: 'OY',
   postDate: new Date().toISOString()
 }
-
-const newEmptyPost = () => ({ ...defaultPost, content: '' })
 
 let cm = null
 
 function App (props) {
   const { db } = props
   // all curPost.content is not up to date
+  const [notSelect, setNotSelect] = useState(true)
   const [curPost, setCurPost] = useState(defaultPost)
   const [allPost, setAllPost] = useState([])
   const [newPostOn, setNewPostOn] = useState(false)
   const [delPostOn, setDelPostOn] = useState(false)
-
-  useEffect(() => {
-    const filename = curPost.filename
-    db.getPost(filename, (event) => {
-      if (!event.target.result) {
-        console.log('create ' + filename)
-        pushPost(curPost)
-      } else {
-        setCurPost(event.target.result)
-      }
-    }, () => {
-      console.log('get curPost error')
-    })
-  }, [])
 
   useEffect(() => {
     db.listPost((event) => {
@@ -83,44 +44,60 @@ function App (props) {
   function pushPost (newPost) {
     db.addPost(newPost)
     setAllPost([...allPost, newPost])
-    console.log('setAll')
+  }
+
+  function onSelect (filename) {
+    if (curPost.filename === filename) return
+    db.getPost(filename, (event) => {
+      console.log('setCurPost: ' + event.target.result.filename)
+      if (cm) cm.value(event.target.result.content)
+      setNotSelect(false)
+      setCurPost(event.target.result)
+    })
   }
 
   // ESC will make side disappeared
   // This code will move when rewrite editor
   if (cm && !cm.isSideBySideActive()) cm.toggleSideBySide()
 
+  let editor =
+    <Editor
+      post={curPost}
+      onChange={onChange}
+      getMdeInstance={(instance) => {cm = instance}}
+      customAction={() => alert('you click an custom action.')}
+    />
+  if (notSelect) {
+    editor = <div/>
+  }
+
   return (
     <div style={{ fontSize: '1.1rem' }}>
       <NewPost open={newPostOn} setOpen={setNewPostOn} onSubmit={(filename) => {
-        let newPost = { ...curPost, filename, postDate: new Date().toISOString() }
+        let newPost = { filename, postDate: new Date().toISOString() }
         pushPost(newPost)
         setCurPost(newPost)
       }}/>
       <DeletePost filename={curPost.filename} open={delPostOn} setOpen={setDelPostOn} onDelete={(filename) => {
         db.deletePost(filename)
+        setNotSelect(true)
         setAllPost(allPost.slice(allPost.length - 1, 1))
       }}/>
 
       <FileBar allPost={allPost}
-               setCurPost={setCurPost}
+               onSelect={onSelect}
                curPostName={curPost.filename}
-               newEmptyPost={newEmptyPost}
-               onSelect={(filename) => {
-                 if (curPost.filename === filename) return
-                 db.getPost(filename, (event) => {
-                   console.log('setCurPost' + event.target.result.filename)
-                   setCurPost(event.target.result)
-                   cm.value(event.target.result.content)
-                 })
+               openDelPost={() => {
+                 if (notSelect) {
+                   alert('select one to continue.')
+                 } else if (allPost.length <= 1) {
+                   alert('you must have on post')
+                 } else {
+                   setDelPostOn(true)
+                 }
                }}
-               openDelPost={() => setDelPostOn(true)}
                openNewPost={() => setNewPostOn(true)}/>
-      <Editor copyPost={() => setNewPostOn(true)} onSave={(content) => pushPost({ ...curPost, content })}
-              onChange={onChange} post={curPost}
-              getMdeInstance={(instance) => {
-                cm = instance
-              }}/>
+      {editor}
     </div>
   )
 }

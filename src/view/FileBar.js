@@ -12,13 +12,11 @@ import profile from '../static/profile.jpg'
 
 export default function (props) {
   const {
-    setCurPost,
     onSelect,
     allPost,
     openNewPost,
     openDelPost,
     curPostName,
-    newEmptyPost
   } = props
 
   return (
@@ -30,7 +28,6 @@ export default function (props) {
       <PostListOffline curPostName={curPostName} onSelect={onSelect} allPost={allPost}/>
       <div style={{ position: 'fixed', bottom: '2%', left: '10%' }}>
         <Fab color="primary" aria-label="Add" onClick={() => {
-          setCurPost(newEmptyPost())
           openNewPost()
         }}>
           <AddIcon/>
