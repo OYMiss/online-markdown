@@ -77,6 +77,7 @@ function App (props) {
         let newPost = { filename, postDate: new Date().toISOString() }
         pushPost(newPost)
         setCurPost(newPost)
+        setNotSelect(false);
       }}/>
       <DeletePost filename={curPost.filename} open={delPostOn} setOpen={setDelPostOn} onDelete={(filename) => {
         db.deletePost(filename)
